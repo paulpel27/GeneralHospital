@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#e0e5ec">
+  <title>GeneralHospital · SaaS PWA</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #e0e5ec; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+    .app-container { width: 100%; max-width: 1500px; height: 92vh; background: #e0e5ec; border-radius: 42px; box-shadow: 20px 20px 60px #b8bcc2, -20px -20px 60px #ffffff; display: flex; flex-direction: column; overflow: hidden; padding: 20px; }
+    .app-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 24px 16px 24px; flex-wrap: wrap; gap: 16px; }
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 48px; height: 48px; border-radius: 18px; background: #e0e5ec; box-shadow: 5px 5px 15px #b8bcc2, -5px -5px 15px #ffffff; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #4b6a9b; }
+    .logo-text { font-weight: 700; font-size: 22px; color: #2d3e5f; letter-spacing: -0.5px; }
+    .logo-text span { font-weight: 400; font-size: 14px; color: #6b7b9b; display: block; }
+    .user-badge { display: flex; align-items: center; gap: 16px; padding: 8px 18px; border-radius: 40px; background: #e0e5ec; box-shadow: inset 5px 5px 10px #b8bcc2, inset -5px -5px 10px #ffffff; }
+    .user-badge i { color: #4b6a9b; font-size: 18px; }
+    .user-badge .name { font-weight: 600; color: #2d3e5f; }
+    .main-menu { display: flex; gap: 6px; flex-wrap: wrap; padding: 6px 12px 18px 12px; border-bottom: 1px solid rgba(184, 188, 194, 0.3); margin-bottom: 8px; overflow-x: auto; }
+    .menu-item { padding: 10px 18px; border-radius: 30px; background: #e0e5ec; box-shadow: 5px 5px 12px #b8bcc2, -5px -5px 12px #ffffff; color: #4b6a9b; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.1s ease; user-select: none; white-space: nowrap; }
+    .menu-item i { font-size: 14px; }
+    .menu-item.active { box-shadow: inset 5px 5px 12px #b8bcc2, inset -5px -5px 12px #ffffff; color: #2d3e5f; }
+    .menu-item:hover { box-shadow: inset 3px 3px 8px #b8bcc2, inset -3px -3px 8px #ffffff; }
+    .content-area { flex: 1; overflow-y: auto; padding: 18px 16px 10px 16px; display: flex; flex-direction: column; gap: 24px; scrollbar-width: thin; scrollbar-color: #b8bcc2 #e0e5ec; }
+    .content-area::-webkit-scrollbar { width: 8px; }
+    .content-area::-webkit-scrollbar-track { background: #e0e5ec; border-radius: 10px; }
+    .content-area::-webkit-scrollbar-thumb { background: #b8bcc2; border-radius: 10px; }
+    .card { background: #e0e5ec; border-radius: 32px; box-shadow: 9px 9px 18px #b8bcc2, -9px -9px 18px #ffffff; padding: 24px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px; }
+    .card-header h2 { font-size: 20px; font-weight: 600; color: #2d3e5f; display: flex; align-items: center; gap: 10px; }
+    .card-header h2 i { color: #4b6a9b; }
+    .neo-btn { background: #e0e5ec; border: none; border-radius: 40px; padding: 12px 24px; font-weight: 600; color: #2d3e5f; box-shadow: 5px 5px 12px #b8bcc2, -5px -5px 12px #ffffff; cursor: pointer; transition: all 0.1s ease; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+    .neo-btn:active { box-shadow: inset 5px 5px 12px #b8bcc2, inset -5px -5px 12px #ffffff; }
+    .neo-btn i { color: #4b6a9b; }
+    .neo-btn.danger { color: #b84b4b; }
+    .neo-btn.danger i { color: #b84b4b; }
+    .neo-btn.small { padding: 8px 14px; font-size: 12px; }
+    .neo-btn.tiny { padding: 6px 10px; font-size: 11px; }
+    .neo-table { width: 100%; border-collapse: collapse; }
+    .neo-table th { text-align: left; padding: 12px 8px; font-weight: 600; color: #5a6b8a; font-size: 13px; border-bottom: 1px solid rgba(184, 188, 194, 0.5); }
+    .neo-table td { padding: 14px 8px; color: #2d3e5f; border-bottom: 1px solid rgba(184, 188, 194, 0.2); font-size: 14px; }
+    .status-badge { padding: 5px 12px; border-radius: 30px; font-size: 12px; font-weight: 600; background: #e0e5ec; box-shadow: inset 2px 2px 5px #b8bcc2, inset -2px -2px 5px #ffffff; color: #4b6a9b; white-space: nowrap; }
+    .status-badge.green { color: #2d7a4b; }
+    .status-badge.red { color: #b84b4b; }
+    .status-badge.orange { color: #b87a2d; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; margin-top: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { font-size: 13px; font-weight: 600; color: #5a6b8a; margin-left: 8px; }
+    .neo-input, .neo-select, .neo-textarea { background: #e0e5ec; border: none; border-radius: 20px; padding: 14px 18px; font-size: 14px; color: #2d3e5f; box-shadow: inset 5px 5px 12px #b8bcc2, inset -5px -5px 12px #ffffff; outline: none; width: 100%; font-family: inherit; }
+    .neo-textarea { border-radius: 20px; resize: vertical; min-height: 70px; }
+    .neo-input::placeholder, .neo-textarea::placeholder { color: #8a9bb8; }
+    .neo-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234b6a9b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; background-size: 16px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; margin-bottom: 8px; }
+    .stat-card { background: #e0e5ec; border-radius: 28px; box-shadow: 9px 9px 18px #b8bcc2, -9px -9px 18px #ffffff; padding: 20px; display: flex; flex-direction: column; gap: 6px; }
+    .stat-card .label { font-size: 13px; color: #6b7b9b; font-weight: 500; }
+    .stat-card .value { font-size: 30px; font-weight: 700; color: #2d3e5f; }
+    .stat-card i { color: #4b6a9b; font-size: 18px; }
+    .workflow-steps { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .workflow-step { background: #e0e5ec; padding: 10px 18px; border-radius: 40px; box-shadow: 5px 5px 12px #b8bcc2, -5px -5px 12px #ffffff; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #2d3e5f; }
+    .workflow-step i { color: #4b6a9b; }
+    .hidden { display: none !important; }
+    .flex-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .mt-16 { margin-top: 16px; }
+    .scroll-table { overflow-x: auto; }
+    .action-btns { display: flex; gap: 6px; }
+    .action-btns .neo-btn { padding: 6px 12px; font-size: 12px; }
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .tab-btn { padding: 10px 20px; border-radius: 30px; background: #e0e5ec; box-shadow: 5px 5px 12px #b8bcc2, -5px -5px 12px #ffffff; border: none; color: #4b6a9b; font-weight: 600; font-size: 13px; cursor: pointer; }
+    .tab-btn.active { box-shadow: inset 5px 5px 12px #b8bcc2, inset -5px -5px 12px #ffffff; color: #2d3e5f; }
+    .detail-panel { background: #e0e5ec; border-radius: 24px; box-shadow: inset 6px 6px 14px #b8bcc2, inset -6px -6px 14px #ffffff; padding: 20px; margin-top: 16px; }
+    .detail-section-title { font-size: 16px; font-weight: 600; color: #2d3e5f; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .detail-section-title i { color: #4b6a9b; }
+    .patient-summary { display: flex; gap: 20px; flex-wrap: wrap; padding: 16px 20px; background: #e0e5ec; border-radius: 24px; box-shadow: 5px 5px 12px #b8bcc2, -5px -5px 12px #ffffff; margin-bottom: 18px; }
+    .patient-summary div { display: flex; flex-direction: column; gap: 4px; }
+    .patient-summary .lbl { font-size: 11px; color: #6b7b9b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .patient-summary .val { font-size: 14px; font-weight: 600; color: #2d3e5f; }
+    @media (max-width: 720px) {
+      .app-container { padding: 12px; height: auto; min-height: 100vh; border-radius: 28px; }
+      .menu-item { padding: 8px 14px; font-size: 12px; }
+      .stat-card .value { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon"><i class="fas fa-hospital"></i></div>
+        <div class="logo-text">GeneralHospital<span>SaaS · PWA</span></div>
+      </div>
+      <div class="user-badge">
+        <i class="fas fa-user-md"></i>
+        <span class="name">Dr. Sarah Chen</span>
+        <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+      </div>
+    </header>
+
+    <nav class="main-menu" id="mainMenu">
+      <div class="menu-item active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</div>
+      <div class="menu-item" data-page="patients"><i class="fas fa-user-injured"></i> Patients</div>
+      <div class="menu-item" data-page="appointments"><i class="fas fa-calendar-check"></i> Appointments</div>
+      <div class="menu-item" data-page="doctors"><i class="fas fa-user-md"></i> Doctors</div>
+      <div class="menu-item" data-page="nurses"><i class="fas fa-user-nurse"></i> Nurses</div>
+      <div class="menu-item" data-page="departments"><i class="fas fa-building"></i> Departments</div>
+      <div class="menu-item" data-page="beds"><i class="fas fa-bed"></i> Beds</div>
+      <div class="menu-item" data-page="schedules"><i class="fas fa-clock"></i> Schedules</div>
+      <div class="menu-item" data-page="labtests"><i class="fas fa-flask"></i> Lab Tests</div>
+      <div class="menu-item" data-page="medicines"><i class="fas fa-pills"></i> Medicines</div>
+      <div class="menu-item" data-page="billing"><i class="fas fa-file-invoice-dollar"></i> Billing</div>
+      <div class="menu-item" data-page="reports"><i class="fas fa-file-alt"></i> Reports</div>
+      <div class="menu-item" data-page="workflows"><i class="fas fa-project-diagram"></i> Workflows</div>
+    </nav>
+
+    <main class="content-area" id="contentArea">
+      <!-- DASHBOARD -->
+      <div id="page-dashboard" class="page">
+        <div class="stats-grid" id="dashboardStats"></div>
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+            <button class="neo-btn" id="refreshDashboardBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>Patient</th><th>Event</th><th>Time</th><th>Status</th></tr></thead>
+              <tbody id="recentActivityBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENTS -->
+      <div id="page-patients" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-user-injured"></i> Patients & Dossiers</h2>
+            <button class="neo-btn" id="addPatientBtn"><i class="fas fa-plus"></i> New Patient</button>
+          </div>
+          <div id="patientFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <h3 style="margin-bottom: 16px; color: #2d3e5f;" id="patientFormTitle">Patient Details</h3>
+            <input type="hidden" id="patientEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Full Name *</label><input type="text" id="patientName" class="neo-input"></div>
+              <div class="form-group"><label>Age *</label><input type="number" id="patientAge" class="neo-input"></div>
+              <div class="form-group"><label>Gender</label><select id="patientGender" class="neo-select"><option>Male</option><option>Female</option><option>Other</option></select></div>
+              <div class="form-group"><label>Phone</label><input type="text" id="patientPhone" class="neo-input"></div>
+              <div class="form-group"><label>Blood Type</label><select id="patientBlood" class="neo-select"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+              <div class="form-group"><label>Department</label><select id="patientDepartment" class="neo-select" data-departments></select></div>
+              <div class="form-group"><label>Assigned Doctor</label><select id="patientDoctor" class="neo-select" data-doctors></select></div>
+              <div class="form-group"><label>Status</label><select id="patientStatus" class="neo-select"><option>Outpatient</option><option>Admitted</option><option>Discharged</option></select></div>
+            </div>
+            <div class="form-group mt-16"><label>Medical Notes</label><textarea id="patientNotes" class="neo-textarea"></textarea></div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="savePatientBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelPatientBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>ID</th><th>Name</th><th>Age/Gender</th><th>Dept</th><th>Doctor</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="patientsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- DOSSIER -->
+        <div id="patientDossierPanel" class="card hidden">
+          <div class="card-header">
+            <h2><i class="fas fa-folder-open"></i> Dossier: <span id="dossierPatientName" style="color:#4b6a9b;"></span></h2>
+            <button class="neo-btn" id="closeDossierBtn"><i class="fas fa-times"></i> Close</button>
+          </div>
+          <div class="patient-summary" id="dossierPatientSummary"></div>
+          <div class="tab-bar" id="dossierTabs">
+            <button class="tab-btn active" data-dtab="consultations"><i class="fas fa-stethoscope"></i> Consultations</button>
+            <button class="tab-btn" data-dtab="diagnoses"><i class="fas fa-notes-medical"></i> Diagnoses</button>
+            <button class="tab-btn" data-dtab="treatments"><i class="fas fa-procedures"></i> Treatments</button>
+            <button class="tab-btn" data-dtab="medications"><i class="fas fa-pills"></i> Medications</button>
+            <button class="tab-btn" data-dtab="labs"><i class="fas fa-flask"></i> Lab Tests</button>
+          </div>
+
+          <!-- Consultations -->
+          <div id="dtab-consultations" class="dtab">
+            <div class="detail-panel">
+              <div class="detail-section-title"><i class="fas fa-stethoscope"></i> Consultations</div>
+              <div class="flex-row"><button class="neo-btn small" id="addConsultBtn"><i class="fas fa-plus"></i> Add Consultation</button></div>
+              <div id="consultFormContainer" class="hidden" style="margin-top:16px; margin-bottom:16px;">
+                <input type="hidden" id="consultEditId">
+                <div class="form-grid">
+                  <div class="form-group"><label>Date</label><input type="date" id="consultDate" class="neo-input"></div>
+                  <div class="form-group"><label>Doctor</label><select id="consultDoctor" class="neo-select" data-doctors></select></div>
+                  <div class="form-group"><label>Reason</label><input type="text" id="consultReason" class="neo-input"></div>
+                  <div class="form-group"><label>Notes</label><input type="text" id="consultNotes" class="neo-input"></div>
+                </div>
+                <div class="flex-row mt-16">
+                  <button class="neo-btn small" id="saveConsultBtn"><i class="fas fa-save"></i> Save</button>
+                  <button class="neo-btn small" id="cancelConsultBtn"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+              </div>
+              <div class="scroll-table" style="margin-top:12px;">
+                <table class="neo-table">
+                  <thead><tr><th>Date</th><th>Doctor</th><th>Reason</th><th>Notes</th><th>Actions</th></tr></thead>
+                  <tbody id="consultTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Diagnoses -->
+          <div id="dtab-diagnoses" class="dtab hidden">
+            <div class="detail-panel">
+              <div class="detail-section-title"><i class="fas fa-notes-medical"></i> Diagnoses</div>
+              <div class="flex-row"><button class="neo-btn small" id="addDiagBtn"><i class="fas fa-plus"></i> Add Diagnosis</button></div>
+              <div id="diagFormContainer" class="hidden" style="margin-top:16px; margin-bottom:16px;">
+                <input type="hidden" id="diagEditId">
+                <div class="form-grid">
+                  <div class="form-group"><label>Date</label><input type="date" id="diagDate" class="neo-input"></div>
+                  <div class="form-group"><label>Code (ICD-10)</label><input type="text" id="diagCode" class="neo-input"></div>
+                  <div class="form-group"><label>Description</label><input type="text" id="diagDesc" class="neo-input"></div>
+                  <div class="form-group"><label>Severity</label><select id="diagSeverity" class="neo-select"><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>
+                  <div class="form-group"><label>Diagnosed By</label><select id="diagDoctor" class="neo-select" data-doctors></select></div>
+                </div>
+                <div class="flex-row mt-16">
+                  <button class="neo-btn small" id="saveDiagBtn"><i class="fas fa-save"></i> Save</button>
+                  <button class="neo-btn small" id="cancelDiagBtn"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+              </div>
+              <div class="scroll-table" style="margin-top:12px;">
+                <table class="neo-table">
+                  <thead><tr><th>Date</th><th>Code</th><th>Description</th><th>Severity</th><th>Doctor</th><th>Actions</th></tr></thead>
+                  <tbody id="diagTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Treatments -->
+          <div id="dtab-treatments" class="dtab hidden">
+            <div class="detail-panel">
+              <div class="detail-section-title"><i class="fas fa-procedures"></i> Treatments</div>
+              <div class="flex-row"><button class="neo-btn small" id="addTreatBtn"><i class="fas fa-plus"></i> Add Treatment</button></div>
+              <div id="treatFormContainer" class="hidden" style="margin-top:16px; margin-bottom:16px;">
+                <input type="hidden" id="treatEditId">
+                <div class="form-grid">
+                  <div class="form-group"><label>Date</label><input type="date" id="treatDate" class="neo-input"></div>
+                  <div class="form-group"><label>Treatment</label><input type="text" id="treatDesc" class="neo-input"></div>
+                  <div class="form-group"><label>Type</label><select id="treatType" class="neo-select"><option>Surgical</option><option>Medical</option><option>Physiotherapy</option><option>Radiation</option><option>Other</option></select></div>
+                  <div class="form-group"><label>Performed By</label><select id="treatDoctor" class="neo-select" data-doctors></select></div>
+                  <div class="form-group"><label>Status</label><select id="treatStatus" class="neo-select"><option>Planned</option><option>In Progress</option><option>Completed</option></select></div>
+                </div>
+                <div class="flex-row mt-16">
+                  <button class="neo-btn small" id="saveTreatBtn"><i class="fas fa-save"></i> Save</button>
+                  <button class="neo-btn small" id="cancelTreatBtn"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+              </div>
+              <div class="scroll-table" style="margin-top:12px;">
+                <table class="neo-table">
+                  <thead><tr><th>Date</th><th>Treatment</th><th>Type</th><th>Doctor</th><th>Status</th><th>Actions</th></tr></thead>
+                  <tbody id="treatTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Medications -->
+          <div id="dtab-medications" class="dtab hidden">
+            <div class="detail-panel">
+              <div class="detail-section-title"><i class="fas fa-pills"></i> Medications</div>
+              <div class="flex-row"><button class="neo-btn small" id="addPatMedBtn"><i class="fas fa-plus"></i> Prescribe Medication</button></div>
+              <div id="patMedFormContainer" class="hidden" style="margin-top:16px; margin-bottom:16px;">
+                <input type="hidden" id="patMedEditId">
+                <div class="form-grid">
+                  <div class="form-group"><label>Medicine</label><select id="patMedMedicine" class="neo-select" data-medicines></select></div>
+                  <div class="form-group"><label>Dosage</label><input type="text" id="patMedDosage" class="neo-input"></div>
+                  <div class="form-group"><label>Frequency</label><input type="text" id="patMedFreq" class="neo-input"></div>
+                  <div class="form-group"><label>Start Date</label><input type="date" id="patMedStart" class="neo-input"></div>
+                  <div class="form-group"><label>End Date</label><input type="date" id="patMedEnd" class="neo-input"></div>
+                  <div class="form-group"><label>Prescribed By</label><select id="patMedDoctor" class="neo-select" data-doctors></select></div>
+                  <div class="form-group"><label>Status</label><select id="patMedStatus" class="neo-select"><option>Active</option><option>Completed</option><option>Discontinued</option></select></div>
+                </div>
+                <div class="flex-row mt-16">
+                  <button class="neo-btn small" id="savePatMedBtn"><i class="fas fa-save"></i> Save</button>
+                  <button class="neo-btn small" id="cancelPatMedBtn"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+              </div>
+              <div class="scroll-table" style="margin-top:12px;">
+                <table class="neo-table">
+                  <thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th><th>Start</th><th>End</th><th>Doctor</th><th>Status</th><th>Actions</th></tr></thead>
+                  <tbody id="patMedTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Labs -->
+          <div id="dtab-labs" class="dtab hidden">
+            <div class="detail-panel">
+              <div class="detail-section-title"><i class="fas fa-flask"></i> Lab Tests</div>
+              <div class="flex-row"><button class="neo-btn small" id="addPatLabBtn"><i class="fas fa-plus"></i> Order Lab Test</button></div>
+              <div id="patLabFormContainer" class="hidden" style="margin-top:16px; margin-bottom:16px;">
+                <input type="hidden" id="patLabEditId">
+                <div class="form-grid">
+                  <div class="form-group"><label>Test Type</label><select id="patLabType" class="neo-select"><option>Blood Count</option><option>X-Ray</option><option>MRI</option><option>CT Scan</option><option>Urinalysis</option><option>ECG</option><option>Biopsy</option></select></div>
+                  <div class="form-group"><label>Ordered By</label><select id="patLabDoctor" class="neo-select" data-doctors></select></div>
+                  <div class="form-group"><label>Date</label><input type="date" id="patLabDate" class="neo-input"></div>
+                  <div class="form-group"><label>Result</label><input type="text" id="patLabResult" class="neo-input"></div>
+                  <div class="form-group"><label>Status</label><select id="patLabStatus" class="neo-select"><option>Pending</option><option>Completed</option></select></div>
+                </div>
+                <div class="flex-row mt-16">
+                  <button class="neo-btn small" id="savePatLabBtn"><i class="fas fa-save"></i> Save</button>
+                  <button class="neo-btn small" id="cancelPatLabBtn"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+              </div>
+              <div class="scroll-table" style="margin-top:12px;">
+                <table class="neo-table">
+                  <thead><tr><th>Test</th><th>Ordered By</th><th>Date</th><th>Result</th><th>Status</th><th>Actions</th></tr></thead>
+                  <tbody id="patLabTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPOINTMENTS -->
+      <div id="page-appointments" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-calendar-check"></i> Appointments</h2>
+            <button class="neo-btn" id="addAppointmentBtn"><i class="fas fa-plus"></i> New Appointment</button>
+          </div>
+          <div id="appointmentFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="appEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Patient</label><select id="appPatient" class="neo-select"></select></div>
+              <div class="form-group"><label>Doctor</label><select id="appDoctor" class="neo-select" data-doctors></select></div>
+              <div class="form-group"><label>Date & Time</label><input type="datetime-local" id="appDateTime" class="neo-input"></div>
+              <div class="form-group"><label>Reason</label><input type="text" id="appReason" class="neo-input"></div>
+              <div class="form-group"><label>Status</label><select id="appStatus" class="neo-select"><option>Scheduled</option><option>Completed</option><option>Cancelled</option></select></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveAppointmentBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelAppointmentBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>Patient</th><th>Doctor</th><th>Date/Time</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="appointmentsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCTORS -->
+      <div id="page-doctors" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-user-md"></i> Doctors</h2>
+            <button class="neo-btn" id="addDoctorBtn"><i class="fas fa-plus"></i> New Doctor</button>
+          </div>
+          <div id="doctorFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="doctorEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Full Name *</label><input type="text" id="doctorName" class="neo-input"></div>
+              <div class="form-group"><label>Specialty</label><select id="doctorSpecialty" class="neo-select"><option>Cardiology</option><option>Neurology</option><option>Orthopedics</option><option>Pediatrics</option><option>Oncology</option><option>Emergency</option><option>General Surgery</option></select></div>
+              <div class="form-group"><label>Department</label><select id="doctorDepartment" class="neo-select" data-departments></select></div>
+              <div class="form-group"><label>Phone</label><input type="text" id="doctorPhone" class="neo-input"></div>
+              <div class="form-group"><label>Email</label><input type="email" id="doctorEmail" class="neo-input"></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveDoctorBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelDoctorBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>ID</th><th>Name</th><th>Specialty</th><th>Department</th><th>Phone</th><th>Email</th><th>Actions</th></tr></thead>
+              <tbody id="doctorsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- NURSES -->
+      <div id="page-nurses" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-user-nurse"></i> Nurses</h2>
+            <button class="neo-btn" id="addNurseBtn"><i class="fas fa-plus"></i> New Nurse</button>
+          </div>
+          <div id="nurseFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="nurseEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Full Name *</label><input type="text" id="nurseName" class="neo-input"></div>
+              <div class="form-group"><label>Department</label><select id="nurseDepartment" class="neo-select" data-departments></select></div>
+              <div class="form-group"><label>Shift</label><select id="nurseShift" class="neo-select"><option>Morning</option><option>Evening</option><option>Night</option></select></div>
+              <div class="form-group"><label>Phone</label><input type="text" id="nursePhone" class="neo-input"></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveNurseBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelNurseBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Shift</th><th>Phone</th><th>Actions</th></tr></thead>
+              <tbody id="nursesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPARTMENTS -->
+      <div id="page-departments" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-building"></i> Departments</h2>
+            <button class="neo-btn" id="addDepartmentBtn"><i class="fas fa-plus"></i> New Department</button>
+          </div>
+          <div id="departmentFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="deptEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Department Name *</label><input type="text" id="deptName" class="neo-input"></div>
+              <div class="form-group"><label>Head Doctor</label><select id="deptHead" class="neo-select" data-doctors></select></div>
+              <div class="form-group"><label>Floor</label><input type="text" id="deptFloor" class="neo-input"></div>
+              <div class="form-group"><label>Phone Extension</label><input type="text" id="deptPhone" class="neo-input"></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveDepartmentBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelDepartmentBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>ID</th><th>Name</th><th>Head Doctor</th><th>Floor</th><th>Phone</th><th>Actions</th></tr></thead>
+              <tbody id="departmentsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEDS -->
+      <div id="page-beds" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-bed"></i> Hospital Beds</h2>
+            <button class="neo-btn" id="addBedBtn"><i class="fas fa-plus"></i> New Bed</button>
+          </div>
+          <div id="bedFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="bedEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Bed Number *</label><input type="text" id="bedNumber" class="neo-input"></div>
+              <div class="form-group"><label>Ward / Room</label><input type="text" id="bedRoom" class="neo-input"></div>
+              <div class="form-group"><label>Department</label><select id="bedDepartment" class="neo-select" data-departments></select></div>
+              <div class="form-group"><label>Status</label><select id="bedStatus" class="neo-select"><option>Available</option><option>Occupied</option><option>Maintenance</option></select></div>
+              <div class="form-group"><label>Assigned Patient</label><select id="bedPatient" class="neo-select"></select></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveBedBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelBedBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>ID</th><th>Bed #</th><th>Room</th><th>Dept</th><th>Patient</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="bedsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCHEDULES -->
+      <div id="page-schedules" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-clock"></i> Work Schedules</h2>
+            <button class="neo-btn" id="addScheduleBtn"><i class="fas fa-plus"></i> New Schedule</button>
+          </div>
+          <div id="scheduleFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="schedEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Staff Type</label><select id="schedStaffType" class="neo-select"><option>Doctor</option><option>Nurse</option></select></div>
+              <div class="form-group"><label>Staff</label><select id="schedStaff" class="neo-select"></select></div>
+              <div class="form-group"><label>Date</label><input type="date" id="schedDate" class="neo-input"></div>
+              <div class="form-group"><label>Shift</label><select id="schedShift" class="neo-select"><option>Morning</option><option>Evening</option><option>Night</option></select></div>
+              <div class="form-group"><label>Department</label><select id="schedDept" class="neo-select" data-departments></select></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveScheduleBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelScheduleBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>Staff</th><th>Type</th><th>Date</th><th>Shift</th><th>Department</th><th>Actions</th></tr></thead>
+              <tbody id="schedulesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAB TESTS (global) -->
+      <div id="page-labtests" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-flask"></i> All Lab Tests</h2>
+            <button class="neo-btn" id="addLabBtn"><i class="fas fa-plus"></i> New Lab Test</button>
+          </div>
+          <div id="labFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="labEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Patient</label><select id="labPatient" class="neo-select"></select></div>
+              <div class="form-group"><label>Test Type</label><select id="labType" class="neo-select"><option>Blood Count</option><option>X-Ray</option><option>MRI</option><option>CT Scan</option><option>Urinalysis</option><option>ECG</option><option>Biopsy</option></select></div>
+              <div class="form-group"><label>Ordered By</label><select id="labDoctor" class="neo-select" data-doctors></select></div>
+              <div class="form-group"><label>Date</label><input type="date" id="labDate" class="neo-input"></div>
+              <div class="form-group"><label>Result</label><input type="text" id="labResult" class="neo-input"></div>
+              <div class="form-group"><label>Status</label><select id="labStatus" class="neo-select"><option>Pending</option><option>Completed</option></select></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveLabBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelLabBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>Patient</th><th>Test</th><th>Ordered By</th><th>Date</th><th>Result</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="labTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEDICINES -->
+      <div id="page-medicines" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-pills"></i> Medicines & Stock</h2>
+            <button class="neo-btn" id="addMedicineBtn"><i class="fas fa-plus"></i> New Medicine</button>
+          </div>
+          <div id="medicineFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="medEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Medicine Name *</label><input type="text" id="medName" class="neo-input"></div>
+              <div class="form-group"><label>Category</label><select id="medCategory" class="neo-select"><option>Antibiotic</option><option>Analgesic</option><option>Cardiovascular</option><option>Diabetes</option><option>Respiratory</option><option>Vitamin</option><option>Other</option></select></div>
+              <div class="form-group"><label>Stock Quantity</label><input type="number" id="medStock" class="neo-input"></div>
+              <div class="form-group"><label>Unit Price ($)</label><input type="number" step="0.01" id="medPrice" class="neo-input"></div>
+              <div class="form-group"><label>Expiry Date</label><input type="date" id="medExpiry" class="neo-input"></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveMedicineBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelMedicineBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Stock</th><th>Price</th><th>Expiry</th><th>Actions</th></tr></thead>
+              <tbody id="medicinesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- BILLING -->
+      <div id="page-billing" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-file-invoice-dollar"></i> Financial Billing</h2>
+            <button class="neo-btn" id="addBillBtn"><i class="fas fa-plus"></i> New Bill</button>
+          </div>
+          <div id="billFormContainer" class="hidden" style="margin-bottom: 24px;">
+            <input type="hidden" id="billEditId">
+            <div class="form-grid">
+              <div class="form-group"><label>Patient</label><select id="billPatient" class="neo-select"></select></div>
+              <div class="form-group"><label>Service</label><select id="billService" class="neo-select"><option>Consultation</option><option>Surgery</option><option>Lab Test</option><option>Medication</option><option>Room Stay</option><option>Emergency Care</option></select></div>
+              <div class="form-group"><label>Amount ($)</label><input type="number" step="0.01" id="billAmount" class="neo-input"></div>
+              <div class="form-group"><label>Date</label><input type="date" id="billDate" class="neo-input"></div>
+              <div class="form-group"><label>Status</label><select id="billStatus" class="neo-select"><option>Pending</option><option>Paid</option><option>Insurance</option></select></div>
+            </div>
+            <div class="flex-row mt-16">
+              <button class="neo-btn" id="saveBillBtn"><i class="fas fa-save"></i> Save</button>
+              <button class="neo-btn" id="cancelBillBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table class="neo-table">
+              <thead><tr><th>ID</th><th>Patient</th><th>Service</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="billsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div id="page-reports" class="page hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-file-alt"></i> Reports & Analytics</h2>
+            <button class="neo-btn" id="generateReportBtn"><i class="fas fa-download"></i> Generate Report</button>
+          </div>
+          <div id="reportContent" style="margin-top: 16px;"><p style="color: #5a6b8a;">Select a report type to generate.</p></div>
+        </div>
+      </div>
+
+      <!-- WORKFLOWS -->
+      <div id="page-workflows" class="page hidden">
+        <div class="card">
+          <div class="card-header"><h2><i class="fas fa-project-diagram"></i> Clinical Workflows</h2></div>
+          <div class="workflow-steps">
+            <div class="workflow-step"><i class="fas fa-check-circle"></i> Patient Admission</div>
+            <div class="workflow-step"><i class="fas fa-check-circle"></i> Triage & Vitals</div>
+            <div class="workflow-step"><i class="fas fa-check-circle"></i> Doctor Consultation</div>
+            <div class="workflow-step"><i class="fas fa-check-circle"></i> Lab Tests</div>
+            <div class="workflow-step"><i class="fas fa-check-circle"></i> Diagnosis & Treatment</div>
+            <div class="workflow-step"><i class="fas fa-check-circle"></i> Discharge</div>
+          </div>
+          <p style="margin-top: 20px; color: #5a6b8a;">Standard hospital workflow for admitted patients.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      // ============ DATABASE ============
+      const DB_NAME = 'GeneralHospitalDB';
+      const DB_VERSION = 3;   // bumped: clean upgrade path to ensure all indexes exist
+      let db = null;
+
+      const STORES = {
+        patients: 'patients',
+        appointments: 'appointments',
+        doctors: 'doctors',
+        nurses: 'nurses',
+        departments: 'departments',
+        beds: 'beds',
+        schedules: 'schedules',
+        labtests: 'labtests',
+        medicines: 'medicines',
+        bills: 'bills',
+        activity: 'activity',
+        consultations: 'consultations',
+        diagnoses: 'diagnoses',
+        treatments: 'treatments',
+        patientMeds: 'patientMeds'
+      };
+
+      // Stores that need a patientId index
+      const PATIENT_INDEXED = ['consultations', 'diagnoses', 'treatments', 'patientMeds', 'labtests'];
+
+      function openDB() {
+        return new Promise((resolve, reject) => {
+          const req = indexedDB.open(DB_NAME, DB_VERSION);
+          req.onerror = (e) => reject(e.target.error);
+          req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            // Create each store if missing
+            for (const key in STORES) {
+              const name = STORES[key];
+              if (!db.objectStoreNames.contains(name)) {
+                const store = db.createObjectStore(name, { keyPath: 'id', autoIncrement: true });
+                if (PATIENT_INDEXED.includes(name)) {
+                  store.createIndex('patientId', 'patientId', { unique: false });
+                }
+              } else {
+                // If store exists but index missing, add it via transaction on the upgrade tx
+                const tx = e.target.transaction;
+                const store = tx.objectStore(name);
+                if (PATIENT_INDEXED.includes(name) && !store.indexNames.contains('patientId')) {
+                  store.createIndex('patientId', 'patientId', { unique: false });
+                }
+              }
+            }
+          };
+        });
+      }
+
+      function dbAdd(store, rec) {
+        return new Promise((res, rej) => {
+          const tx = db.transaction(store, 'readwrite');
+          const r = tx.objectStore(store).add(rec);
+          r.onsuccess = () => res(r.result);
+          r.onerror = (e) => rej(e.target.error);
+        });
+      }
+      function dbPut(store, rec) {
+        return new Promise((res, rej) => {
+          const tx = db.transaction(store, 'readwrite');
+          const r = tx.objectStore(store).put(rec);
+          r.onsuccess = () => res(r.result);
+          r.onerror = (e) => rej(e.target.error);
+        });
+      }
+      function dbGetAll(store) {
+        return new Promise((res, rej) => {
+          if (!db) return res([]);
+          const tx = db.transaction(store, 'readonly');
+          const r = tx.objectStore(store).getAll();
+          r.onsuccess = () => res(r.result);
+          r.onerror = (e) => rej(e.target.error);
+        });
+      }
+      function dbGet(store, id) {
+        return new Promise((res, rej) => {
+          const tx = db.transaction(store, 'readonly');
+          const r = tx.objectStore(store).get(id);
+          r.onsuccess = () => res(r.result);
+          r.onerror = (e) => rej(e.target.error);
+        });
+      }
+      function dbDelete(store, id) {
+        return new Promise((res, rej) => {
+          const tx = db.transaction(store, 'readwrite');
+          const r = tx.objectStore(store).delete(id);
+          r.onsuccess = () => res();
+          r.onerror = (e) => rej(e.target.error);
+        });
+      }
+      function dbCount(store) {
+        return new Promise((res, rej) => {
+          const tx = db.transaction(store, 'readonly');
+          const r = tx.objectStore(store).count();
+          r.onsuccess = () => res(r.result);
+          r.onerror = (e) => rej(e.target.error);
+        });
+      }
+      function dbByPatient(store, patientId) {
+        return new Promise((res, rej) => {
+          const tx = db.transaction(store, 'readonly');
+          const idx = tx.objectStore(store).index('patientId');
+          const r = idx.getAll(patientId);
+          r.onsuccess = () => res(r.result);
+          r.onerror = (e) => rej(e.target.error);
+        });
+      }
+
+      // ============ SEED ============
+      async function seedData() {
+        if (await dbCount(STORES.departments) === 0) {
+          const arr = [
+            { name: 'Cardiology', headDoctor: 'Dr. Alan Smith', floor: '3', phone: '301' },
+            { name: 'Neurology', headDoctor: 'Dr. Mei Lee', floor: '4', phone: '401' },
+            { name: 'Orthopedics', headDoctor: 'Dr. Raj Patel', floor: '2', phone: '201' },
+            { name: 'Pediatrics', headDoctor: 'Dr. Lisa Kim', floor: '1', phone: '101' },
+            { name: 'Oncology', headDoctor: 'Dr. Priya Reddy', floor: '5', phone: '501' },
+            { name: 'Emergency', headDoctor: 'Dr. James Carter', floor: 'G', phone: '001' }
+          ];
+          for (const r of arr) await dbAdd(STORES.departments, r);
+        }
+        if (await dbCount(STORES.doctors) === 0) {
+          const arr = [
+            { name: 'Dr. Alan Smith', specialty: 'Cardiology', department: 'Cardiology', phone: '555-0101', email: 'asmith@gh.org' },
+            { name: 'Dr. Mei Lee', specialty: 'Neurology', department: 'Neurology', phone: '555-0102', email: 'mlee@gh.org' },
+            { name: 'Dr. Raj Patel', specialty: 'Orthopedics', department: 'Orthopedics', phone: '555-0103', email: 'rpatel@gh.org' },
+            { name: 'Dr. Lisa Kim', specialty: 'Pediatrics', department: 'Pediatrics', phone: '555-0104', email: 'lkim@gh.org' },
+            { name: 'Dr. Priya Reddy', specialty: 'Oncology', department: 'Oncology', phone: '555-0105', email: 'preddy@gh.org' },
+            { name: 'Dr. James Carter', specialty: 'Emergency', department: 'Emergency', phone: '555-0106', email: 'jcarter@gh.org' }
+          ];
+          for (const r of arr) await dbAdd(STORES.doctors, r);
+        }
+        if (await dbCount(STORES.nurses) === 0) {
+          const arr = [
+            { name: 'Nurse Amy Wong', department: 'Cardiology', shift: 'Morning', phone: '555-0201' },
+            { name: 'Nurse Ben Torres', department: 'Neurology', shift: 'Evening', phone: '555-0202' },
+            { name: 'Nurse Clara Diaz', department: 'Orthopedics', shift: 'Night', phone: '555-0203' },
+            { name: 'Nurse Dan Okafor', department: 'Pediatrics', shift: 'Morning', phone: '555-0204' },
+            { name: 'Nurse Eva Novak', department: 'Oncology', shift: 'Evening', phone: '555-0205' }
+          ];
+          for (const r of arr) await dbAdd(STORES.nurses, r);
+        }
+        let patientIds = [];
+        if (await dbCount(STORES.patients) === 0) {
+          const arr = [
+            { name: 'James Wilson', age: 58, gender: 'Male', phone: '555-1001', bloodType: 'A+', department: 'Cardiology', doctor: 'Dr. Alan Smith', status: 'Admitted', notes: 'Hypertension, allergic to penicillin.' },
+            { name: 'Maria Garcia', age: 34, gender: 'Female', phone: '555-1002', bloodType: 'O-', department: 'Neurology', doctor: 'Dr. Mei Lee', status: 'Outpatient', notes: 'Migraines.' },
+            { name: 'Robert Chen', age: 45, gender: 'Male', phone: '555-1003', bloodType: 'B+', department: 'Orthopedics', doctor: 'Dr. Raj Patel', status: 'Admitted', notes: 'Post-op knee replacement.' },
+            { name: 'Sarah Johnson', age: 29, gender: 'Female', phone: '555-1004', bloodType: 'AB+', department: 'Pediatrics', doctor: 'Dr. Lisa Kim', status: 'Outpatient', notes: 'Routine checkup.' },
+            { name: 'Michael Brown', age: 67, gender: 'Male', phone: '555-1005', bloodType: 'A-', department: 'Oncology', doctor: 'Dr. Priya Reddy', status: 'Admitted', notes: 'Chemotherapy cycle 3.' },
+            { name: 'Emily Davis', age: 41, gender: 'Female', phone: '555-1006', bloodType: 'O+', department: 'Emergency', doctor: 'Dr. James Carter', status: 'Discharged', notes: 'Fracture healed.' }
+          ];
+          for (const r of arr) { const id = await dbAdd(STORES.patients, r); patientIds.push(id); }
+        } else {
+          const ps = await dbGetAll(STORES.patients);
+          patientIds = ps.map(p => p.id);
+        }
+
+        // Ensure each patient has at least one record of each detail type
+        const today = new Date().toISOString().slice(0, 10);
+
+        for (const pid of patientIds) {
+          const existingConsults = await dbByPatient(STORES.consultations, pid);
+          if (existingConsults.length === 0) {
+            await dbAdd(STORES.consultations, {
+              patientId: pid, date: today,
+              doctor: 'Dr. Alan Smith', reason: 'Initial consultation', notes: 'General review.'
+            });
+          }
+          const existingDiag = await dbByPatient(STORES.diagnoses, pid);
+          if (existingDiag.length === 0) {
+            await dbAdd(STORES.diagnoses, {
+              patientId: pid, date: today, code: 'Z00.00',
+              description: 'General medical examination', severity: 'Mild', doctor: 'Dr. Alan Smith'
+            });
+          }
+          const existingTreat = await dbByPatient(STORES.treatments, pid);
+          if (existingTreat.length === 0) {
+            await dbAdd(STORES.treatments, {
+              patientId: pid, date: today, description: 'Observation',
+              type: 'Medical', doctor: 'Dr. Alan Smith', status: 'In Progress'
+            });
+          }
+          const existingMeds = await dbByPatient(STORES.patientMeds, pid);
+          if (existingMeds.length === 0) {
+            await dbAdd(STORES.patientMeds, {
+              patientId: pid, medicine: 'Ibuprofen', dosage: '400mg', frequency: '3x daily',
+              start: today, end: today, doctor: 'Dr. Alan Smith', status: 'Active'
+            });
+          }
+          const existingLabs = await dbByPatient(STORES.labtests, pid);
+          if (existingLabs.length === 0) {
+            const p = await dbGet(STORES.patients, pid);
+            await dbAdd(STORES.labtests, {
+              patientId: pid, patientName: p ? p.name : '',
+              type: 'Blood Count', doctor: 'Dr. Alan Smith', date: today,
+              result: 'Normal', status: 'Completed'
+            });
+          }
+        }
+
+        // Other stores
+        if (await dbCount(STORES.appointments) === 0) {
+          const now = new Date();
+          const todayDT = now.toISOString().slice(0, 16);
+          const tomorrowDT = new Date(now.getTime() + 86400000).toISOString().slice(0, 16);
+          const p = await dbGetAll(STORES.patients);
+          const arr = [
+            { patientId: p[0]?.id, patientName: p[0]?.name, doctor: 'Dr. Alan Smith', datetime: todayDT, reason: 'Cardiac checkup', status: 'Scheduled' },
+            { patientId: p[1]?.id, patientName: p[1]?.name, doctor: 'Dr. Mei Lee', datetime: tomorrowDT, reason: 'Follow-up', status: 'Scheduled' }
+          ];
+          for (const r of arr) await dbAdd(STORES.appointments, r);
+        }
+        if (await dbCount(STORES.beds) === 0) {
+          const arr = [
+            { bedNumber: 'C-101', room: 'Ward A', department: 'Cardiology', status: 'Available', patient: '' },
+            { bedNumber: 'C-102', room: 'Ward A', department: 'Cardiology', status: 'Available', patient: '' },
+            { bedNumber: 'N-201', room: 'Ward B', department: 'Neurology', status: 'Available', patient: '' }
+          ];
+          for (const r of arr) await dbAdd(STORES.beds, r);
+        }
+        if (await dbCount(STORES.schedules) === 0) {
+          const arr = [
+            { staffType: 'Doctor', staff: 'Dr. Alan Smith', date: today, shift: 'Morning', department: 'Cardiology' },
+            { staffType: 'Nurse', staff: 'Nurse Amy Wong', date: today, shift: 'Morning', department: 'Cardiology' }
+          ];
+          for (const r of arr) await dbAdd(STORES.schedules, r);
+        }
+        if (await dbCount(STORES.medicines) === 0) {
+          const arr = [
+            { name: 'Amoxicillin', category: 'Antibiotic', stock: 500, price: 0.50, expiry: '2025-12-31' },
+            { name: 'Ibuprofen', category: 'Analgesic', stock: 1200, price: 0.20, expiry: '2025-10-15' },
+            { name: 'Atorvastatin', category: 'Cardiovascular', stock: 300, price: 1.20, expiry: '2025-08-20' },
+            { name: 'Metformin', category: 'Diabetes', stock: 800, price: 0.35, expiry: '2026-01-10' }
+          ];
+          for (const r of arr) await dbAdd(STORES.medicines, r);
+        }
+        if (await dbCount(STORES.bills) === 0) {
+          const p = await dbGetAll(STORES.patients);
+          const arr = [
+            { patientId: p[0]?.id, patientName: p[0]?.name, service: 'Consultation', amount: 150, date: today, status: 'Paid' },
+            { patientId: p[1]?.id, patientName: p[1]?.name, service: 'Lab Test', amount: 75, date: today, status: 'Pending' }
+          ];
+          for (const r of arr) await dbAdd(STORES.bills, r);
+        }
+        if (await dbCount(STORES.activity) === 0) {
+          const arr = [
+            { patientName: 'James Wilson', event: 'Admitted', time: '10:30 AM', status: 'Complete' },
+            { patientName: 'Maria Garcia', event: 'Lab results received', time: '09:15 AM', status: 'Complete' }
+          ];
+          for (const r of arr) await dbAdd(STORES.activity, r);
+        }
+      }
+
+      // ============ UI HELPERS ============
+      const menuItems = document.querySelectorAll('.menu-item');
+      const pages = document.querySelectorAll('.page');
+
+      function switchPage(id) {
+        menuItems.forEach(m => m.classList.toggle('active', m.dataset.page === id));
+        pages.forEach(p => p.classList.add('hidden'));
+        document.getElementById('page-' + id).classList.remove('hidden');
+        if (id === 'dashboard') refreshDashboard();
+        if (id === 'patients') renderPatients();
+        if (id === 'appointments') renderAppointments();
+        if (id === 'doctors') renderDoctors();
+        if (id === 'nurses') renderNurses();
+        if (id === 'departments') renderDepartments();
+        if (id === 'beds') renderBeds();
+        if (id === 'schedules') renderSchedules();
+        if (id === 'labtests') renderGlobalLabs();
+        if (id === 'medicines') renderMedicines();
+        if (id === 'billing') renderBills();
+      }
+      menuItems.forEach(m => m.addEventListener('click', () => switchPage(m.dataset.page)));
+
+      async function populateSelect(selectId, store, key) {
+        const items = await dbGetAll(store);
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        const cur = sel.value;
+        sel.innerHTML = '';
+        items.forEach(i => {
+          const o = document.createElement('option');
+          o.value = i[key] || i.id;
+          o.textContent = i[key] || i.name || ('ID ' + i.id);
+          sel.appendChild(o);
+        });
+        if (cur) sel.value = cur;
+      }
+
+      async function refreshAllSelects() {
+        const map = [
+          ['patientDepartment', 'departments', 'name'],
+          ['patientDoctor', 'doctors', 'name'],
+          ['appDoctor', 'doctors', 'name'],
+          ['doctorDepartment', 'departments', 'name'],
+          ['nurseDepartment', 'departments', 'name'],
+          ['deptHead', 'doctors', 'name'],
+          ['bedDepartment', 'departments', 'name'],
+          ['schedDept', 'departments', 'name'],
+          ['labDoctor', 'doctors', 'name'],
+          ['appPatient', 'patients', 'name'],
+          ['labPatient', 'patients', 'name'],
+          ['bedPatient', 'patients', 'name'],
+          ['billPatient', 'patients', 'name'],
+          ['consultDoctor', 'doctors', 'name'],
+          ['diagDoctor', 'doctors', 'name'],
+          ['treatDoctor', 'doctors', 'name'],
+          ['patMedDoctor', 'doctors', 'name'],
+          ['patLabDoctor', 'doctors', 'name']
+        ];
+        for (const [id, store, key] of map) await populateSelect(id, store, key);
+
+        const meds = await dbGetAll(STORES.medicines);
+        const msel = document.getElementById('patMedMedicine');
+        if (msel) {
+          const cur = msel.value;
+          msel.innerHTML = '';
+          meds.forEach(m => {
+            const o = document.createElement('option');
+            o.value = m.name;
+            o.textContent = m.name;
+            msel.appendChild(o);
+          });
+          if (cur) msel.value = cur;
+        }
+      }
+
+      // ============ DASHBOARD ============
+      async function refreshDashboard() {
+        const [patients, appointments, beds, labs, bills, consults, diags, treats, meds] = await Promise.all([
+          dbGetAll('patients'), dbGetAll('appointments'), dbGetAll('beds'),
+          dbGetAll('labtests'), dbGetAll('bills'), dbGetAll('consultations'),
+          dbGetAll('diagnoses'), dbGetAll('treatments'), dbGetAll('patientMeds')
+        ]);
+        const today = new Date().toISOString().slice(0, 10);
+        const todaysApps = appointments.filter(a => a.datetime && a.datetime.startsWith(today));
+        const pending = bills.filter(b => b.status === 'Pending').reduce((s, b) => s + (parseFloat(b.amount) || 0), 0);
+        document.getElementById('dashboardStats').innerHTML = `
+          <div class="stat-card"><i class="fas fa-user-injured"></i><span class="label">Patients</span><span class="value">${patients.length}</span></div>
+          <div class="stat-card"><i class="fas fa-calendar-check"></i><span class="label">Appointments Today</span><span class="value">${todaysApps.length}</span></div>
+          <div class="stat-card"><i class="fas fa-bed"></i><span class="label">Occupied Beds</span><span class="value">${beds.filter(b=>b.status==='Occupied').length}/${beds.length}</span></div>
+          <div class="stat-card"><i class="fas fa-stethoscope"></i><span class="label">Consultations</span><span class="value">${consults.length}</span></div>
+          <div class="stat-card"><i class="fas fa-notes-medical"></i><span class="label">Diagnoses</span><span class="value">${diags.length}</span></div>
+          <div class="stat-card"><i class="fas fa-procedures"></i><span class="label">Treatments</span><span class="value">${treats.length}</span></div>
+          <div class="stat-card"><i class="fas fa-pills"></i><span class="label">Prescriptions</span><span class="value">${meds.length}</span></div>
+          <div class="stat-card"><i class="fas fa-flask"></i><span class="label">Lab Tests</span><span class="value">${labs.length}</span></div>
+          <div class="stat-card"><i class="fas fa-file-invoice-dollar"></i><span class="label">Pending Billing</span><span class="value">$${pending.toFixed(2)}</span></div>
+        `;
+        const acts = await dbGetAll('activity');
+        const tbody = document.getElementById('recentActivityBody');
+        tbody.innerHTML = '';
+        acts.sort((a,b) => (b.id||0) - (a.id||0)).slice(0, 8).forEach(a => {
+          tbody.innerHTML += `<tr><td>${a.patientName||'—'}</td><td>${a.event||'—'}</td><td>${a.time||'—'}</td><td><span class="status-badge">${a.status||'—'}</span></td></tr>`;
+        });
+        if (!acts.length) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#8a9bb8;">No activity</td></tr>';
+      }
+      document.getElementById('refreshDashboardBtn').addEventListener('click', refreshDashboard);
+
+      // ============ PATIENTS ============
+      const patientForm = document.getElementById('patientFormContainer');
+      document.getElementById('addPatientBtn').addEventListener('click', async () => {
+        document.getElementById('patientEditId').value = '';
+        document.getElementById('patientFormTitle').textContent = 'New Patient';
+        ['patientName','patientAge','patientPhone','patientNotes'].forEach(i => document.getElementById(i).value = '');
+        await refreshAllSelects();
+        patientForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelPatientBtn').addEventListener('click', () => patientForm.classList.add('hidden'));
+
+      document.getElementById('savePatientBtn').addEventListener('click', async () => {
+        const name = document.getElementById('patientName').value.trim();
+        const age = parseInt(document.getElementById('patientAge').value);
+        if (!name || !age) { alert('Name and age required'); return; }
+        const editId = document.getElementById('patientEditId').value;
+        const rec = {
+          name, age,
+          gender: document.getElementById('patientGender').value,
+          phone: document.getElementById('patientPhone').value,
+          bloodType: document.getElementById('patientBlood').value,
+          department: document.getElementById('patientDepartment').value,
+          doctor: document.getElementById('patientDoctor').value,
+          status: document.getElementById('patientStatus').value,
+          notes: document.getElementById('patientNotes').value
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('patients', rec); }
+        else { await dbAdd('patients', rec); }
+        patientForm.classList.add('hidden');
+        await renderPatients();
+        await refreshDashboard();
+      });
+
+      async function renderPatients() {
+        const patients = await dbGetAll('patients');
+        const tbody = document.getElementById('patientsTableBody');
+        tbody.innerHTML = '';
+        patients.forEach(p => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${p.id}</td><td>${p.name}</td><td>${p.age}/${p.gender}</td>
+              <td>${p.department}</td><td>${p.doctor}</td>
+              <td><span class="status-badge ${p.status==='Admitted'?'orange':p.status==='Discharged'?'green':''}">${p.status}</span></td>
+              <td>
+                <div class="action-btns">
+                  <button class="neo-btn small open-dossier" data-id="${p.id}" title="Open Dossier"><i class="fas fa-folder-open"></i></button>
+                  <button class="neo-btn small edit-patient" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+                  <button class="neo-btn small danger delete-patient" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                </div>
+              </td>
+            </tr>`;
+        });
+        if (!patients.length) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#8a9bb8;">No patients</td></tr>';
+
+        document.querySelectorAll('.open-dossier').forEach(b => b.addEventListener('click', () => openDossier(parseInt(b.dataset.id))));
+        document.querySelectorAll('.edit-patient').forEach(b => b.addEventListener('click', async () => {
+          const p = await dbGet('patients', parseInt(b.dataset.id));
+          if (!p) return;
+          document.getElementById('patientEditId').value = p.id;
+          document.getElementById('patientFormTitle').textContent = 'Edit Patient';
+          document.getElementById('patientName').value = p.name || '';
+          document.getElementById('patientAge').value = p.age || '';
+          document.getElementById('patientGender').value = p.gender || 'Male';
+          document.getElementById('patientPhone').value = p.phone || '';
+          document.getElementById('patientBlood').value = p.bloodType || 'A+';
+          await refreshAllSelects();
+          document.getElementById('patientDepartment').value = p.department || '';
+          document.getElementById('patientDoctor').value = p.doctor || '';
+          document.getElementById('patientStatus').value = p.status || 'Outpatient';
+          document.getElementById('patientNotes').value = p.notes || '';
+          patientForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.delete-patient').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete this patient and ALL their records?')) return;
+          const pid = parseInt(b.dataset.id);
+          for (const s of ['consultations','diagnoses','treatments','patientMeds','labtests']) {
+            const rs = await dbByPatient(s, pid);
+            for (const r of rs) await dbDelete(s, r.id);
+          }
+          await dbDelete('patients', pid);
+          document.getElementById('patientDossierPanel').classList.add('hidden');
+          await renderPatients();
+          await refreshDashboard();
+        }));
+      }
+
+      // ============ DOSSIER ============
+      let currentPatientId = null;
+      let currentTab = 'consultations';
+
+      document.getElementById('closeDossierBtn').addEventListener('click', () => {
+        document.getElementById('patientDossierPanel').classList.add('hidden');
+        currentPatientId = null;
+      });
+
+      document.querySelectorAll('#dossierTabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#dossierTabs .tab-btn').forEach(x => x.classList.remove('active'));
+          btn.classList.add('active');
+          currentTab = btn.dataset.dtab;
+          document.querySelectorAll('.dtab').forEach(t => t.classList.add('hidden'));
+          document.getElementById('dtab-' + currentTab).classList.remove('hidden');
+          if (currentTab === 'consultations') renderConsults();
+          if (currentTab === 'diagnoses') renderDiags();
+          if (currentTab === 'treatments') renderTreats();
+          if (currentTab === 'medications') renderPatMeds();
+          if (currentTab === 'labs') renderPatLabs();
+        });
+      });
+
+      async function openDossier(pid) {
+        currentPatientId = pid;
+        const p = await dbGet('patients', pid);
+        if (!p) { alert('Patient not found'); return; }
+        document.getElementById('dossierPatientName').textContent = p.name;
+        document.getElementById('dossierPatientSummary').innerHTML = `
+          <div><span class="lbl">ID</span><span class="val">${p.id}</span></div>
+          <div><span class="lbl">Age / Gender</span><span class="val">${p.age} / ${p.gender}</span></div>
+          <div><span class="lbl">Blood</span><span class="val">${p.bloodType||'—'}</span></div>
+          <div><span class="lbl">Phone</span><span class="val">${p.phone||'—'}</span></div>
+          <div><span class="lbl">Dept</span><span class="val">${p.department||'—'}</span></div>
+          <div><span class="lbl">Doctor</span><span class="val">${p.doctor||'—'}</span></div>
+          <div><span class="lbl">Status</span><span class="val">${p.status||'—'}</span></div>
+        `;
+        document.getElementById('patientDossierPanel').classList.remove('hidden');
+        await refreshAllSelects();
+        document.querySelectorAll('#dossierTabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.dtab === currentTab));
+        document.querySelectorAll('.dtab').forEach(t => t.classList.add('hidden'));
+        document.getElementById('dtab-' + currentTab).classList.remove('hidden');
+        if (currentTab === 'consultations') renderConsults();
+        if (currentTab === 'diagnoses') renderDiags();
+        if (currentTab === 'treatments') renderTreats();
+        if (currentTab === 'medications') renderPatMeds();
+        if (currentTab === 'labs') renderPatLabs();
+        document.getElementById('patientDossierPanel').scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // -------- Consultations --------
+      const consultForm = document.getElementById('consultFormContainer');
+      document.getElementById('addConsultBtn').addEventListener('click', async () => {
+        document.getElementById('consultEditId').value = '';
+        document.getElementById('consultDate').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('consultReason').value = '';
+        document.getElementById('consultNotes').value = '';
+        await refreshAllSelects();
+        consultForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelConsultBtn').addEventListener('click', () => consultForm.classList.add('hidden'));
+      document.getElementById('saveConsultBtn').addEventListener('click', async () => {
+        if (!currentPatientId) { alert('No patient selected'); return; }
+        const editId = document.getElementById('consultEditId').value;
+        const rec = {
+          patientId: currentPatientId,
+          date: document.getElementById('consultDate').value,
+          doctor: document.getElementById('consultDoctor').value,
+          reason: document.getElementById('consultReason').value,
+          notes: document.getElementById('consultNotes').value
+        };
+        try {
+          if (editId) { rec.id = parseInt(editId); await dbPut('consultations', rec); }
+          else { await dbAdd('consultations', rec); }
+          consultForm.classList.add('hidden');
+          await renderConsults();
+          await refreshDashboard();
+        } catch (e) { alert('Save failed: ' + e); console.error(e); }
+      });
+
+      async function renderConsults() {
+        if (!currentPatientId) return;
+        const items = await dbByPatient('consultations', currentPatientId);
+        const tbody = document.getElementById('consultTableBody');
+        tbody.innerHTML = '';
+        items.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+        items.forEach(c => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${c.date||'—'}</td><td>${c.doctor||'—'}</td><td>${c.reason||'—'}</td><td>${c.notes||'—'}</td>
+              <td><div class="action-btns">
+                <button class="neo-btn tiny edit-consult" data-id="${c.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn tiny danger del-consult" data-id="${c.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#8a9bb8;">No consultations yet</td></tr>';
+        document.querySelectorAll('.edit-consult').forEach(b => b.addEventListener('click', async () => {
+          const c = await dbGet('consultations', parseInt(b.dataset.id));
+          if (!c) return;
+          await refreshAllSelects();
+          document.getElementById('consultEditId').value = c.id;
+          document.getElementById('consultDate').value = c.date || '';
+          document.getElementById('consultDoctor').value = c.doctor || '';
+          document.getElementById('consultReason').value = c.reason || '';
+          document.getElementById('consultNotes').value = c.notes || '';
+          consultForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-consult').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete this consultation?')) return;
+          await dbDelete('consultations', parseInt(b.dataset.id));
+          await renderConsults();
+          await refreshDashboard();
+        }));
+      }
+
+      // -------- Diagnoses --------
+      const diagForm = document.getElementById('diagFormContainer');
+      document.getElementById('addDiagBtn').addEventListener('click', async () => {
+        document.getElementById('diagEditId').value = '';
+        document.getElementById('diagDate').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('diagCode').value = '';
+        document.getElementById('diagDesc').value = '';
+        await refreshAllSelects();
+        diagForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelDiagBtn').addEventListener('click', () => diagForm.classList.add('hidden'));
+      document.getElementById('saveDiagBtn').addEventListener('click', async () => {
+        if (!currentPatientId) { alert('No patient selected'); return; }
+        const editId = document.getElementById('diagEditId').value;
+        const rec = {
+          patientId: currentPatientId,
+          date: document.getElementById('diagDate').value,
+          code: document.getElementById('diagCode').value,
+          description: document.getElementById('diagDesc').value,
+          severity: document.getElementById('diagSeverity').value,
+          doctor: document.getElementById('diagDoctor').value
+        };
+        try {
+          if (editId) { rec.id = parseInt(editId); await dbPut('diagnoses', rec); }
+          else { await dbAdd('diagnoses', rec); }
+          diagForm.classList.add('hidden');
+          await renderDiags();
+          await refreshDashboard();
+        } catch (e) { alert('Save failed: ' + e); console.error(e); }
+      });
+
+      async function renderDiags() {
+        if (!currentPatientId) return;
+        const items = await dbByPatient('diagnoses', currentPatientId);
+        const tbody = document.getElementById('diagTableBody');
+        tbody.innerHTML = '';
+        items.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+        items.forEach(d => {
+          const cls = d.severity === 'Severe' ? 'red' : d.severity === 'Moderate' ? 'orange' : 'green';
+          tbody.innerHTML += `
+            <tr>
+              <td>${d.date||'—'}</td><td>${d.code||'—'}</td><td>${d.description||'—'}</td>
+              <td><span class="status-badge ${cls}">${d.severity||'—'}</span></td><td>${d.doctor||'—'}</td>
+              <td><div class="action-btns">
+                <button class="neo-btn tiny edit-diag" data-id="${d.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn tiny danger del-diag" data-id="${d.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#8a9bb8;">No diagnoses yet</td></tr>';
+        document.querySelectorAll('.edit-diag').forEach(b => b.addEventListener('click', async () => {
+          const d = await dbGet('diagnoses', parseInt(b.dataset.id));
+          if (!d) return;
+          await refreshAllSelects();
+          document.getElementById('diagEditId').value = d.id;
+          document.getElementById('diagDate').value = d.date || '';
+          document.getElementById('diagCode').value = d.code || '';
+          document.getElementById('diagDesc').value = d.description || '';
+          document.getElementById('diagSeverity').value = d.severity || 'Mild';
+          document.getElementById('diagDoctor').value = d.doctor || '';
+          diagForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-diag').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete this diagnosis?')) return;
+          await dbDelete('diagnoses', parseInt(b.dataset.id));
+          await renderDiags();
+          await refreshDashboard();
+        }));
+      }
+
+      // -------- Treatments --------
+      const treatForm = document.getElementById('treatFormContainer');
+      document.getElementById('addTreatBtn').addEventListener('click', async () => {
+        document.getElementById('treatEditId').value = '';
+        document.getElementById('treatDate').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('treatDesc').value = '';
+        await refreshAllSelects();
+        treatForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelTreatBtn').addEventListener('click', () => treatForm.classList.add('hidden'));
+      document.getElementById('saveTreatBtn').addEventListener('click', async () => {
+        if (!currentPatientId) { alert('No patient selected'); return; }
+        const editId = document.getElementById('treatEditId').value;
+        const rec = {
+          patientId: currentPatientId,
+          date: document.getElementById('treatDate').value,
+          description: document.getElementById('treatDesc').value,
+          type: document.getElementById('treatType').value,
+          doctor: document.getElementById('treatDoctor').value,
+          status: document.getElementById('treatStatus').value
+        };
+        try {
+          if (editId) { rec.id = parseInt(editId); await dbPut('treatments', rec); }
+          else { await dbAdd('treatments', rec); }
+          treatForm.classList.add('hidden');
+          await renderTreats();
+          await refreshDashboard();
+        } catch (e) { alert('Save failed: ' + e); console.error(e); }
+      });
+
+      async function renderTreats() {
+        if (!currentPatientId) return;
+        const items = await dbByPatient('treatments', currentPatientId);
+        const tbody = document.getElementById('treatTableBody');
+        tbody.innerHTML = '';
+        items.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+        items.forEach(t => {
+          const cls = t.status === 'Completed' ? 'green' : t.status === 'In Progress' ? 'orange' : '';
+          tbody.innerHTML += `
+            <tr>
+              <td>${t.date||'—'}</td><td>${t.description||'—'}</td><td>${t.type||'—'}</td><td>${t.doctor||'—'}</td>
+              <td><span class="status-badge ${cls}">${t.status||'—'}</span></td>
+              <td><div class="action-btns">
+                <button class="neo-btn tiny edit-treat" data-id="${t.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn tiny danger del-treat" data-id="${t.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#8a9bb8;">No treatments yet</td></tr>';
+        document.querySelectorAll('.edit-treat').forEach(b => b.addEventListener('click', async () => {
+          const t = await dbGet('treatments', parseInt(b.dataset.id));
+          if (!t) return;
+          await refreshAllSelects();
+          document.getElementById('treatEditId').value = t.id;
+          document.getElementById('treatDate').value = t.date || '';
+          document.getElementById('treatDesc').value = t.description || '';
+          document.getElementById('treatType').value = t.type || 'Surgical';
+          document.getElementById('treatDoctor').value = t.doctor || '';
+          document.getElementById('treatStatus').value = t.status || 'Planned';
+          treatForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-treat').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete this treatment?')) return;
+          await dbDelete('treatments', parseInt(b.dataset.id));
+          await renderTreats();
+          await refreshDashboard();
+        }));
+      }
+
+      // -------- Patient Medications --------
+      const patMedForm = document.getElementById('patMedFormContainer');
+      document.getElementById('addPatMedBtn').addEventListener('click', async () => {
+        document.getElementById('patMedEditId').value = '';
+        document.getElementById('patMedDosage').value = '';
+        document.getElementById('patMedFreq').value = '';
+        document.getElementById('patMedStart').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('patMedEnd').value = new Date(Date.now() + 30*86400000).toISOString().slice(0, 10);
+        await refreshAllSelects();
+        patMedForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelPatMedBtn').addEventListener('click', () => patMedForm.classList.add('hidden'));
+      document.getElementById('savePatMedBtn').addEventListener('click', async () => {
+        if (!currentPatientId) { alert('No patient selected'); return; }
+        const editId = document.getElementById('patMedEditId').value;
+        const rec = {
+          patientId: currentPatientId,
+          medicine: document.getElementById('patMedMedicine').value,
+          dosage: document.getElementById('patMedDosage').value,
+          frequency: document.getElementById('patMedFreq').value,
+          start: document.getElementById('patMedStart').value,
+          end: document.getElementById('patMedEnd').value,
+          doctor: document.getElementById('patMedDoctor').value,
+          status: document.getElementById('patMedStatus').value
+        };
+        try {
+          if (editId) { rec.id = parseInt(editId); await dbPut('patientMeds', rec); }
+          else { await dbAdd('patientMeds', rec); }
+          patMedForm.classList.add('hidden');
+          await renderPatMeds();
+          await refreshDashboard();
+        } catch (e) { alert('Save failed: ' + e); console.error(e); }
+      });
+
+      async function renderPatMeds() {
+        if (!currentPatientId) return;
+        const items = await dbByPatient('patientMeds', currentPatientId);
+        const tbody = document.getElementById('patMedTableBody');
+        tbody.innerHTML = '';
+        items.forEach(m => {
+          const cls = m.status === 'Active' ? 'green' : m.status === 'Discontinued' ? 'red' : '';
+          tbody.innerHTML += `
+            <tr>
+              <td>${m.medicine||'—'}</td><td>${m.dosage||'—'}</td><td>${m.frequency||'—'}</td>
+              <td>${m.start||'—'}</td><td>${m.end||'—'}</td><td>${m.doctor||'—'}</td>
+              <td><span class="status-badge ${cls}">${m.status||'—'}</span></td>
+              <td><div class="action-btns">
+                <button class="neo-btn tiny edit-patmed" data-id="${m.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn tiny danger del-patmed" data-id="${m.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#8a9bb8;">No medications yet</td></tr>';
+        document.querySelectorAll('.edit-patmed').forEach(b => b.addEventListener('click', async () => {
+          const m = await dbGet('patientMeds', parseInt(b.dataset.id));
+          if (!m) return;
+          await refreshAllSelects();
+          document.getElementById('patMedEditId').value = m.id;
+          document.getElementById('patMedMedicine').value = m.medicine || '';
+          document.getElementById('patMedDosage').value = m.dosage || '';
+          document.getElementById('patMedFreq').value = m.frequency || '';
+          document.getElementById('patMedStart').value = m.start || '';
+          document.getElementById('patMedEnd').value = m.end || '';
+          document.getElementById('patMedDoctor').value = m.doctor || '';
+          document.getElementById('patMedStatus').value = m.status || 'Active';
+          patMedForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-patmed').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete this medication?')) return;
+          await dbDelete('patientMeds', parseInt(b.dataset.id));
+          await renderPatMeds();
+          await refreshDashboard();
+        }));
+      }
+
+      // -------- Patient Labs --------
+      const patLabForm = document.getElementById('patLabFormContainer');
+      document.getElementById('addPatLabBtn').addEventListener('click', async () => {
+        document.getElementById('patLabEditId').value = '';
+        document.getElementById('patLabDate').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('patLabResult').value = '';
+        await refreshAllSelects();
+        patLabForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelPatLabBtn').addEventListener('click', () => patLabForm.classList.add('hidden'));
+      document.getElementById('savePatLabBtn').addEventListener('click', async () => {
+        if (!currentPatientId) { alert('No patient selected'); return; }
+        const editId = document.getElementById('patLabEditId').value;
+        const p = await dbGet('patients', currentPatientId);
+        const rec = {
+          patientId: currentPatientId,
+          patientName: p ? p.name : '',
+          type: document.getElementById('patLabType').value,
+          doctor: document.getElementById('patLabDoctor').value,
+          date: document.getElementById('patLabDate').value,
+          result: document.getElementById('patLabResult').value,
+          status: document.getElementById('patLabStatus').value
+        };
+        try {
+          if (editId) { rec.id = parseInt(editId); await dbPut('labtests', rec); }
+          else { await dbAdd('labtests', rec); }
+          patLabForm.classList.add('hidden');
+          await renderPatLabs();
+          await refreshDashboard();
+        } catch (e) { alert('Save failed: ' + e); console.error(e); }
+      });
+
+      async function renderPatLabs() {
+        if (!currentPatientId) return;
+        const items = await dbByPatient('labtests', currentPatientId);
+        const tbody = document.getElementById('patLabTableBody');
+        tbody.innerHTML = '';
+        items.forEach(l => {
+          const cls = l.status === 'Completed' ? 'green' : 'orange';
+          tbody.innerHTML += `
+            <tr>
+              <td>${l.type||'—'}</td><td>${l.doctor||'—'}</td><td>${l.date||'—'}</td><td>${l.result||'—'}</td>
+              <td><span class="status-badge ${cls}">${l.status||'—'}</span></td>
+              <td><div class="action-btns">
+                <button class="neo-btn tiny edit-patlab" data-id="${l.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn tiny danger del-patlab" data-id="${l.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#8a9bb8;">No lab tests yet</td></tr>';
+        document.querySelectorAll('.edit-patlab').forEach(b => b.addEventListener('click', async () => {
+          const l = await dbGet('labtests', parseInt(b.dataset.id));
+          if (!l) return;
+          await refreshAllSelects();
+          document.getElementById('patLabEditId').value = l.id;
+          document.getElementById('patLabType').value = l.type || 'Blood Count';
+          document.getElementById('patLabDoctor').value = l.doctor || '';
+          document.getElementById('patLabDate').value = l.date || '';
+          document.getElementById('patLabResult').value = l.result || '';
+          document.getElementById('patLabStatus').value = l.status || 'Pending';
+          patLabForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-patlab').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete this lab test?')) return;
+          await dbDelete('labtests', parseInt(b.dataset.id));
+          await renderPatLabs();
+          await refreshDashboard();
+        }));
+      }
+
+      // ============ APPOINTMENTS ============
+      const appForm = document.getElementById('appointmentFormContainer');
+      document.getElementById('addAppointmentBtn').addEventListener('click', async () => {
+        document.getElementById('appEditId').value = '';
+        document.getElementById('appDateTime').value = '';
+        document.getElementById('appReason').value = '';
+        await refreshAllSelects();
+        appForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelAppointmentBtn').addEventListener('click', () => appForm.classList.add('hidden'));
+      document.getElementById('saveAppointmentBtn').addEventListener('click', async () => {
+        const editId = document.getElementById('appEditId').value;
+        const sel = document.getElementById('appPatient');
+        const rec = {
+          patientId: parseInt(sel.value) || null,
+          patientName: sel.options[sel.selectedIndex]?.textContent || '',
+          doctor: document.getElementById('appDoctor').value,
+          datetime: document.getElementById('appDateTime').value,
+          reason: document.getElementById('appReason').value,
+          status: document.getElementById('appStatus').value
+        };
+        if (!rec.datetime) { alert('Date/time required'); return; }
+        if (editId) { rec.id = parseInt(editId); await dbPut('appointments', rec); }
+        else { await dbAdd('appointments', rec); }
+        appForm.classList.add('hidden');
+        await renderAppointments();
+        await refreshDashboard();
+      });
+
+      async function renderAppointments() {
+        const items = await dbGetAll('appointments');
+        const tbody = document.getElementById('appointmentsTableBody');
+        tbody.innerHTML = '';
+        items.forEach(a => {
+          const dt = a.datetime ? new Date(a.datetime).toLocaleString() : '—';
+          tbody.innerHTML += `
+            <tr>
+              <td>${a.patientName||'—'}</td><td>${a.doctor||'—'}</td><td>${dt}</td>
+              <td>${a.reason||'—'}</td><td><span class="status-badge">${a.status||'—'}</span></td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-app" data-id="${a.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-app" data-id="${a.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#8a9bb8;">No appointments</td></tr>';
+        document.querySelectorAll('.edit-app').forEach(b => b.addEventListener('click', async () => {
+          const a = await dbGet('appointments', parseInt(b.dataset.id));
+          if (!a) return;
+          await refreshAllSelects();
+          document.getElementById('appEditId').value = a.id;
+          document.getElementById('appPatient').value = a.patientId || '';
+          document.getElementById('appDoctor').value = a.doctor || '';
+          document.getElementById('appDateTime').value = a.datetime || '';
+          document.getElementById('appReason').value = a.reason || '';
+          document.getElementById('appStatus').value = a.status || 'Scheduled';
+          appForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-app').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('appointments', parseInt(b.dataset.id));
+          await renderAppointments();
+          await refreshDashboard();
+        }));
+      }
+
+      // ============ DOCTORS ============
+      const docForm = document.getElementById('doctorFormContainer');
+      document.getElementById('addDoctorBtn').addEventListener('click', async () => {
+        document.getElementById('doctorEditId').value = '';
+        ['doctorName','doctorPhone','doctorEmail'].forEach(i => document.getElementById(i).value = '');
+        await refreshAllSelects();
+        docForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelDoctorBtn').addEventListener('click', () => docForm.classList.add('hidden'));
+      document.getElementById('saveDoctorBtn').addEventListener('click', async () => {
+        const name = document.getElementById('doctorName').value.trim();
+        if (!name) { alert('Name required'); return; }
+        const editId = document.getElementById('doctorEditId').value;
+        const rec = {
+          name,
+          specialty: document.getElementById('doctorSpecialty').value,
+          department: document.getElementById('doctorDepartment').value,
+          phone: document.getElementById('doctorPhone').value,
+          email: document.getElementById('doctorEmail').value
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('doctors', rec); }
+        else { await dbAdd('doctors', rec); }
+        docForm.classList.add('hidden');
+        await renderDoctors();
+      });
+
+      async function renderDoctors() {
+        const items = await dbGetAll('doctors');
+        const tbody = document.getElementById('doctorsTableBody');
+        tbody.innerHTML = '';
+        items.forEach(d => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${d.id}</td><td>${d.name}</td><td>${d.specialty}</td><td>${d.department}</td>
+              <td>${d.phone}</td><td>${d.email}</td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-doc" data-id="${d.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-doc" data-id="${d.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#8a9bb8;">No doctors</td></tr>';
+        document.querySelectorAll('.edit-doc').forEach(b => b.addEventListener('click', async () => {
+          const d = await dbGet('doctors', parseInt(b.dataset.id));
+          if (!d) return;
+          await refreshAllSelects();
+          document.getElementById('doctorEditId').value = d.id;
+          document.getElementById('doctorName').value = d.name || '';
+          document.getElementById('doctorSpecialty').value = d.specialty || 'Cardiology';
+          document.getElementById('doctorDepartment').value = d.department || '';
+          document.getElementById('doctorPhone').value = d.phone || '';
+          document.getElementById('doctorEmail').value = d.email || '';
+          docForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-doc').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('doctors', parseInt(b.dataset.id));
+          await renderDoctors();
+        }));
+      }
+
+      // ============ NURSES ============
+      const nurseForm = document.getElementById('nurseFormContainer');
+      document.getElementById('addNurseBtn').addEventListener('click', async () => {
+        document.getElementById('nurseEditId').value = '';
+        ['nurseName','nursePhone'].forEach(i => document.getElementById(i).value = '');
+        await refreshAllSelects();
+        nurseForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelNurseBtn').addEventListener('click', () => nurseForm.classList.add('hidden'));
+      document.getElementById('saveNurseBtn').addEventListener('click', async () => {
+        const name = document.getElementById('nurseName').value.trim();
+        if (!name) { alert('Name required'); return; }
+        const editId = document.getElementById('nurseEditId').value;
+        const rec = {
+          name,
+          department: document.getElementById('nurseDepartment').value,
+          shift: document.getElementById('nurseShift').value,
+          phone: document.getElementById('nursePhone').value
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('nurses', rec); }
+        else { await dbAdd('nurses', rec); }
+        nurseForm.classList.add('hidden');
+        await renderNurses();
+      });
+
+      async function renderNurses() {
+        const items = await dbGetAll('nurses');
+        const tbody = document.getElementById('nursesTableBody');
+        tbody.innerHTML = '';
+        items.forEach(n => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${n.id}</td><td>${n.name}</td><td>${n.department}</td><td>${n.shift}</td><td>${n.phone}</td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-nurse" data-id="${n.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-nurse" data-id="${n.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#8a9bb8;">No nurses</td></tr>';
+        document.querySelectorAll('.edit-nurse').forEach(b => b.addEventListener('click', async () => {
+          const n = await dbGet('nurses', parseInt(b.dataset.id));
+          if (!n) return;
+          await refreshAllSelects();
+          document.getElementById('nurseEditId').value = n.id;
+          document.getElementById('nurseName').value = n.name || '';
+          document.getElementById('nurseDepartment').value = n.department || '';
+          document.getElementById('nurseShift').value = n.shift || 'Morning';
+          document.getElementById('nursePhone').value = n.phone || '';
+          nurseForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-nurse').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('nurses', parseInt(b.dataset.id));
+          await renderNurses();
+        }));
+      }
+
+      // ============ DEPARTMENTS ============
+      const deptForm = document.getElementById('departmentFormContainer');
+      document.getElementById('addDepartmentBtn').addEventListener('click', async () => {
+        document.getElementById('deptEditId').value = '';
+        ['deptName','deptFloor','deptPhone'].forEach(i => document.getElementById(i).value = '');
+        await refreshAllSelects();
+        deptForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelDepartmentBtn').addEventListener('click', () => deptForm.classList.add('hidden'));
+      document.getElementById('saveDepartmentBtn').addEventListener('click', async () => {
+        const name = document.getElementById('deptName').value.trim();
+        if (!name) { alert('Name required'); return; }
+        const editId = document.getElementById('deptEditId').value;
+        const rec = {
+          name,
+          headDoctor: document.getElementById('deptHead').value,
+          floor: document.getElementById('deptFloor').value,
+          phone: document.getElementById('deptPhone').value
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('departments', rec); }
+        else { await dbAdd('departments', rec); }
+        deptForm.classList.add('hidden');
+        await renderDepartments();
+      });
+
+      async function renderDepartments() {
+        const items = await dbGetAll('departments');
+        const tbody = document.getElementById('departmentsTableBody');
+        tbody.innerHTML = '';
+        items.forEach(d => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${d.id}</td><td>${d.name}</td><td>${d.headDoctor}</td><td>${d.floor}</td><td>${d.phone}</td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-dept" data-id="${d.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-dept" data-id="${d.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#8a9bb8;">No departments</td></tr>';
+        document.querySelectorAll('.edit-dept').forEach(b => b.addEventListener('click', async () => {
+          const d = await dbGet('departments', parseInt(b.dataset.id));
+          if (!d) return;
+          await refreshAllSelects();
+          document.getElementById('deptEditId').value = d.id;
+          document.getElementById('deptName').value = d.name || '';
+          document.getElementById('deptHead').value = d.headDoctor || '';
+          document.getElementById('deptFloor').value = d.floor || '';
+          document.getElementById('deptPhone').value = d.phone || '';
+          deptForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-dept').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('departments', parseInt(b.dataset.id));
+          await renderDepartments();
+        }));
+      }
+
+      // ============ BEDS ============
+      const bedForm = document.getElementById('bedFormContainer');
+      document.getElementById('addBedBtn').addEventListener('click', async () => {
+        document.getElementById('bedEditId').value = '';
+        ['bedNumber','bedRoom'].forEach(i => document.getElementById(i).value = '');
+        await refreshAllSelects();
+        bedForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelBedBtn').addEventListener('click', () => bedForm.classList.add('hidden'));
+      document.getElementById('saveBedBtn').addEventListener('click', async () => {
+        const bedNumber = document.getElementById('bedNumber').value.trim();
+        if (!bedNumber) { alert('Bed number required'); return; }
+        const editId = document.getElementById('bedEditId').value;
+        const sel = document.getElementById('bedPatient');
+        const rec = {
+          bedNumber,
+          room: document.getElementById('bedRoom').value,
+          department: document.getElementById('bedDepartment').value,
+          status: document.getElementById('bedStatus').value,
+          patient: sel.options[sel.selectedIndex]?.textContent || ''
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('beds', rec); }
+        else { await dbAdd('beds', rec); }
+        bedForm.classList.add('hidden');
+        await renderBeds();
+      });
+
+      async function renderBeds() {
+        const items = await dbGetAll('beds');
+        const tbody = document.getElementById('bedsTableBody');
+        tbody.innerHTML = '';
+        items.forEach(b => {
+          const cls = b.status === 'Occupied' ? 'orange' : b.status === 'Available' ? 'green' : 'red';
+          tbody.innerHTML += `
+            <tr>
+              <td>${b.id}</td><td>${b.bedNumber}</td><td>${b.room}</td><td>${b.department}</td>
+              <td>${b.patient||'—'}</td><td><span class="status-badge ${cls}">${b.status}</span></td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-bed" data-id="${b.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-bed" data-id="${b.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#8a9bb8;">No beds</td></tr>';
+        document.querySelectorAll('.edit-bed').forEach(b => b.addEventListener('click', async () => {
+          const r = await dbGet('beds', parseInt(b.dataset.id));
+          if (!r) return;
+          await refreshAllSelects();
+          document.getElementById('bedEditId').value = r.id;
+          document.getElementById('bedNumber').value = r.bedNumber || '';
+          document.getElementById('bedRoom').value = r.room || '';
+          document.getElementById('bedDepartment').value = r.department || '';
+          document.getElementById('bedStatus').value = r.status || 'Available';
+          document.getElementById('bedPatient').value = r.patient || '';
+          bedForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-bed').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('beds', parseInt(b.dataset.id));
+          await renderBeds();
+        }));
+      }
+
+      // ============ SCHEDULES ============
+      const schedForm = document.getElementById('scheduleFormContainer');
+      document.getElementById('addScheduleBtn').addEventListener('click', async () => {
+        document.getElementById('schedEditId').value = '';
+        document.getElementById('schedDate').value = new Date().toISOString().slice(0, 10);
+        await refreshAllSelects();
+        await populateSchedStaff();
+        schedForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelScheduleBtn').addEventListener('click', () => schedForm.classList.add('hidden'));
+      document.getElementById('schedStaffType').addEventListener('change', populateSchedStaff);
+
+      async function populateSchedStaff() {
+        const type = document.getElementById('schedStaffType').value;
+        const store = type === 'Doctor' ? 'doctors' : 'nurses';
+        const items = await dbGetAll(store);
+        const sel = document.getElementById('schedStaff');
+        sel.innerHTML = '';
+        items.forEach(i => {
+          const o = document.createElement('option');
+          o.value = i.name;
+          o.textContent = i.name;
+          sel.appendChild(o);
+        });
+      }
+
+      document.getElementById('saveScheduleBtn').addEventListener('click', async () => {
+        const staff = document.getElementById('schedStaff').value;
+        const date = document.getElementById('schedDate').value;
+        if (!staff || !date) { alert('Staff and date required'); return; }
+        const editId = document.getElementById('schedEditId').value;
+        const rec = {
+          staffType: document.getElementById('schedStaffType').value,
+          staff, date,
+          shift: document.getElementById('schedShift').value,
+          department: document.getElementById('schedDept').value
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('schedules', rec); }
+        else { await dbAdd('schedules', rec); }
+        schedForm.classList.add('hidden');
+        await renderSchedules();
+      });
+
+      async function renderSchedules() {
+        const items = await dbGetAll('schedules');
+        const tbody = document.getElementById('schedulesTableBody');
+        tbody.innerHTML = '';
+        items.forEach(s => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${s.staff}</td><td>${s.staffType}</td><td>${s.date}</td><td>${s.shift}</td><td>${s.department}</td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-sched" data-id="${s.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-sched" data-id="${s.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#8a9bb8;">No schedules</td></tr>';
+        document.querySelectorAll('.edit-sched').forEach(b => b.addEventListener('click', async () => {
+          const s = await dbGet('schedules', parseInt(b.dataset.id));
+          if (!s) return;
+          await refreshAllSelects();
+          document.getElementById('schedEditId').value = s.id;
+          document.getElementById('schedStaffType').value = s.staffType || 'Doctor';
+          await populateSchedStaff();
+          document.getElementById('schedStaff').value = s.staff || '';
+          document.getElementById('schedDate').value = s.date || '';
+          document.getElementById('schedShift').value = s.shift || 'Morning';
+          document.getElementById('schedDept').value = s.department || '';
+          schedForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-sched').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('schedules', parseInt(b.dataset.id));
+          await renderSchedules();
+        }));
+      }
+
+      // ============ GLOBAL LAB TESTS ============
+      const labForm = document.getElementById('labFormContainer');
+      document.getElementById('addLabBtn').addEventListener('click', async () => {
+        document.getElementById('labEditId').value = '';
+        document.getElementById('labDate').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('labResult').value = '';
+        await refreshAllSelects();
+        labForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelLabBtn').addEventListener('click', () => labForm.classList.add('hidden'));
+      document.getElementById('saveLabBtn').addEventListener('click', async () => {
+        const editId = document.getElementById('labEditId').value;
+        const sel = document.getElementById('labPatient');
+        const rec = {
+          patientId: parseInt(sel.value) || null,
+          patientName: sel.options[sel.selectedIndex]?.textContent || '',
+          type: document.getElementById('labType').value,
+          doctor: document.getElementById('labDoctor').value,
+          date: document.getElementById('labDate').value,
+          result: document.getElementById('labResult').value,
+          status: document.getElementById('labStatus').value
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('labtests', rec); }
+        else { await dbAdd('labtests', rec); }
+        labForm.classList.add('hidden');
+        await renderGlobalLabs();
+        await refreshDashboard();
+      });
+
+      async function renderGlobalLabs() {
+        const items = await dbGetAll('labtests');
+        const tbody = document.getElementById('labTableBody');
+        tbody.innerHTML = '';
+        items.forEach(l => {
+          const cls = l.status === 'Completed' ? 'green' : 'orange';
+          tbody.innerHTML += `
+            <tr>
+              <td>${l.patientName||'—'}</td><td>${l.type||'—'}</td><td>${l.doctor||'—'}</td>
+              <td>${l.date||'—'}</td><td>${l.result||'—'}</td>
+              <td><span class="status-badge ${cls}">${l.status||'—'}</span></td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-lab" data-id="${l.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-lab" data-id="${l.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#8a9bb8;">No lab tests</td></tr>';
+        document.querySelectorAll('.edit-lab').forEach(b => b.addEventListener('click', async () => {
+          const l = await dbGet('labtests', parseInt(b.dataset.id));
+          if (!l) return;
+          await refreshAllSelects();
+          document.getElementById('labEditId').value = l.id;
+          document.getElementById('labPatient').value = l.patientId || '';
+          document.getElementById('labType').value = l.type || 'Blood Count';
+          document.getElementById('labDoctor').value = l.doctor || '';
+          document.getElementById('labDate').value = l.date || '';
+          document.getElementById('labResult').value = l.result || '';
+          document.getElementById('labStatus').value = l.status || 'Pending';
+          labForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-lab').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('labtests', parseInt(b.dataset.id));
+          await renderGlobalLabs();
+          await refreshDashboard();
+        }));
+      }
+
+      // ============ MEDICINES ============
+      const medForm = document.getElementById('medicineFormContainer');
+      document.getElementById('addMedicineBtn').addEventListener('click', () => {
+        document.getElementById('medEditId').value = '';
+        ['medName','medStock','medPrice','medExpiry'].forEach(i => document.getElementById(i).value = '');
+        medForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelMedicineBtn').addEventListener('click', () => medForm.classList.add('hidden'));
+      document.getElementById('saveMedicineBtn').addEventListener('click', async () => {
+        const name = document.getElementById('medName').value.trim();
+        if (!name) { alert('Name required'); return; }
+        const editId = document.getElementById('medEditId').value;
+        const rec = {
+          name,
+          category: document.getElementById('medCategory').value,
+          stock: parseInt(document.getElementById('medStock').value) || 0,
+          price: parseFloat(document.getElementById('medPrice').value) || 0,
+          expiry: document.getElementById('medExpiry').value
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('medicines', rec); }
+        else { await dbAdd('medicines', rec); }
+        medForm.classList.add('hidden');
+        await renderMedicines();
+      });
+
+      async function renderMedicines() {
+        const items = await dbGetAll('medicines');
+        const tbody = document.getElementById('medicinesTableBody');
+        tbody.innerHTML = '';
+        items.forEach(m => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${m.id}</td><td>${m.name}</td><td>${m.category}</td><td>${m.stock}</td>
+              <td>$${parseFloat(m.price||0).toFixed(2)}</td><td>${m.expiry||'—'}</td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-med" data-id="${m.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-med" data-id="${m.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#8a9bb8;">No medicines</td></tr>';
+        document.querySelectorAll('.edit-med').forEach(b => b.addEventListener('click', async () => {
+          const m = await dbGet('medicines', parseInt(b.dataset.id));
+          if (!m) return;
+          document.getElementById('medEditId').value = m.id;
+          document.getElementById('medName').value = m.name || '';
+          document.getElementById('medCategory').value = m.category || 'Antibiotic';
+          document.getElementById('medStock').value = m.stock || 0;
+          document.getElementById('medPrice').value = m.price || 0;
+          document.getElementById('medExpiry').value = m.expiry || '';
+          medForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-med').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('medicines', parseInt(b.dataset.id));
+          await renderMedicines();
+        }));
+      }
+
+      // ============ BILLING ============
+      const billForm = document.getElementById('billFormContainer');
+      document.getElementById('addBillBtn').addEventListener('click', async () => {
+        document.getElementById('billEditId').value = '';
+        document.getElementById('billDate').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('billAmount').value = '';
+        await refreshAllSelects();
+        billForm.classList.remove('hidden');
+      });
+      document.getElementById('cancelBillBtn').addEventListener('click', () => billForm.classList.add('hidden'));
+      document.getElementById('saveBillBtn').addEventListener('click', async () => {
+        const editId = document.getElementById('billEditId').value;
+        const sel = document.getElementById('billPatient');
+        const rec = {
+          patientId: parseInt(sel.value) || null,
+          patientName: sel.options[sel.selectedIndex]?.textContent || '',
+          service: document.getElementById('billService').value,
+          amount: parseFloat(document.getElementById('billAmount').value) || 0,
+          date: document.getElementById('billDate').value,
+          status: document.getElementById('billStatus').value
+        };
+        if (editId) { rec.id = parseInt(editId); await dbPut('bills', rec); }
+        else { await dbAdd('bills', rec); }
+        billForm.classList.add('hidden');
+        await renderBills();
+        await refreshDashboard();
+      });
+
+      async function renderBills() {
+        const items = await dbGetAll('bills');
+        const tbody = document.getElementById('billsTableBody');
+        tbody.innerHTML = '';
+        items.forEach(b => {
+          const cls = b.status === 'Paid' ? 'green' : b.status === 'Insurance' ? 'orange' : '';
+          tbody.innerHTML += `
+            <tr>
+              <td>${b.id}</td><td>${b.patientName||'—'}</td><td>${b.service}</td>
+              <td>$${parseFloat(b.amount||0).toFixed(2)}</td><td>${b.date}</td>
+              <td><span class="status-badge ${cls}">${b.status}</span></td>
+              <td><div class="action-btns">
+                <button class="neo-btn small edit-bill" data-id="${b.id}"><i class="fas fa-edit"></i></button>
+                <button class="neo-btn small danger del-bill" data-id="${b.id}"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+        });
+        if (!items.length) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#8a9bb8;">No bills</td></tr>';
+        document.querySelectorAll('.edit-bill').forEach(b => b.addEventListener('click', async () => {
+          const r = await dbGet('bills', parseInt(b.dataset.id));
+          if (!r) return;
+          await refreshAllSelects();
+          document.getElementById('billEditId').value = r.id;
+          document.getElementById('billPatient').value = r.patientId || '';
+          document.getElementById('billService').value = r.service || 'Consultation';
+          document.getElementById('billAmount').value = r.amount || 0;
+          document.getElementById('billDate').value = r.date || '';
+          document.getElementById('billStatus').value = r.status || 'Pending';
+          billForm.classList.remove('hidden');
+        }));
+        document.querySelectorAll('.del-bill').forEach(b => b.addEventListener('click', async () => {
+          if (!confirm('Delete?')) return;
+          await dbDelete('bills', parseInt(b.dataset.id));
+          await renderBills();
+          await refreshDashboard();
+        }));
+      }
+
+      // ============ REPORTS ============
+      document.getElementById('generateReportBtn').addEventListener('click', async () => {
+        const [patients, appointments, labs, bills, beds, medicines, consults, diags, treats, meds] = await Promise.all([
+          dbGetAll('patients'), dbGetAll('appointments'), dbGetAll('labtests'), dbGetAll('bills'),
+          dbGetAll('beds'), dbGetAll('medicines'), dbGetAll('consultations'), dbGetAll('diagnoses'),
+          dbGetAll('treatments'), dbGetAll('patientMeds')
+        ]);
+        const deptCount = {};
+        patients.forEach(p => deptCount[p.department] = (deptCount[p.department] || 0) + 1);
+        const totalBilled = bills.reduce((s, b) => s + (parseFloat(b.amount) || 0), 0);
+        const totalPaid = bills.filter(b => b.status === 'Paid').reduce((s, b) => s + (parseFloat(b.amount) || 0), 0);
+        let html = `<h3 style="margin-bottom:16px;color:#2d3e5f;">Hospital Summary</h3><div class="stats-grid">`;
+        [['Patients', patients.length], ['Appointments', appointments.length], ['Consultations', consults.length],
+         ['Diagnoses', diags.length], ['Treatments', treats.length], ['Medications', meds.length],
+         ['Lab Tests', labs.length], ['Beds', beds.length], ['Total Billed', '$' + totalBilled.toFixed(2)],
+         ['Total Paid', '$' + totalPaid.toFixed(2)]].forEach(([l, v]) => {
+          html += `<div class="stat-card"><span class="label">${l}</span><span class="value">${v}</span></div>`;
+        });
+        html += `</div><h4 style="margin-top:24px;margin-bottom:8px;color:#2d3e5f;">Patients by Department</h4><ul style="margin-left:24px;color:#2d3e5f;">`;
+        for (const d in deptCount) html += `<li>${d}: ${deptCount[d]}</li>`;
+        html += `</ul>`;
+        document.getElementById('reportContent').innerHTML = html;
+      });
+
+      // ============ INIT ============
+      async function init() {
+        try {
+          await openDB();
+          await seedData();
+          await refreshAllSelects();
+          await refreshDashboard();
+          await renderPatients();
+        } catch (e) {
+          console.error(e);
+          alert('DB init error: ' + e + '\nTry: indexedDB.deleteDatabase("GeneralHospitalDB"); then reload.');
+        }
+      }
+      init();
+    })();
+  </script>
+</body>
+</html>
